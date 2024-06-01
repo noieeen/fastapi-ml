@@ -1,4 +1,7 @@
 from fastapi import FastAPI, Request
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
+from fastapi_cache.decorator import cache
 from pydantic import BaseModel
 import pandas as pd
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -10,7 +13,12 @@ class DataInput(BaseModel):
     XAxis: List[str]
     YAxis: List[float]
 
+@app.on_event("startup")
+async def startup():
+    FastAPICache.init(InMemoryBackend(), prefix="fastapi-cache")
+    
 @app.post("/predict")
+@cache(expire=60)  # Cache for 60 seconds
 async def predict(data: DataInput):
     result = await time_series_prediction(data)
     result_dict = format_result(result)
