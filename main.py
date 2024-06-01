@@ -16,6 +16,11 @@ class DataInput(BaseModel):
 @app.on_event("startup")
 async def startup():
     FastAPICache.init(InMemoryBackend(), prefix="fastapi-cache")
+
+@app.get("/")
+def root():
+    message = { "message": "FastAPI Prediction!", "version":"0.0.1" }
+    return message , 201
     
 @app.post("/predict")
 @cache(expire=60)  # Cache for 60 seconds
