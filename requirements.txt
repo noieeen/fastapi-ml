@@ -1,0 +1,9 @@
+virtualenv
+fastapi
+uvicorn[standard]
+pandas
+statsmodels
+numpy
+# pydantic
+fastapi-cache2
+aioredis
